@@ -5,7 +5,7 @@ import { CuriosityService } from './curiosity.service';
 
 @Controller('curiosity')
 export class CuriosityController {
-  constructor(private readonly curiosityService: CuriosityService) { }
+  constructor(private readonly curiosityService: CuriosityService) {}
 
   @Get('all')
   getAllCuriosities(): Curiosity[] {
