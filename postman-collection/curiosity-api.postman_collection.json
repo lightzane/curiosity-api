@@ -1,0 +1,298 @@
+{
+	"info": {
+		"_postman_id": "7941ea57-6281-4ff9-8dcf-5543f849689c",
+		"name": "curiosity-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "register",
+							"item": [
+								{
+									"name": "SUCCESS",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('status test', () => {\r",
+													"    pm.response.to.have.status(201)\r",
+													"    pm.response.to.have.status('Created')\r",
+													"})\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const ObjectId = (\r",
+													"    d = Date,\r",
+													"    m = Math,\r",
+													"    h = 16,\r",
+													"    x = (n) => m.floor(n).toString(h),\r",
+													"  ) => x(d.now() / 1000) + ' '.repeat(h).replace(/./g, () => x(m.random() * h))\r",
+													"\r",
+													"const random = ObjectId().substring(8,13)\r",
+													"\r",
+													"pm.environment.set('username', 'User'.concat(random))"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"sample\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{apiUrl}}/user/register",
+											"host": [
+												"{{apiUrl}}"
+											],
+											"path": [
+												"user",
+												"register"
+											]
+										},
+										"description": "**Response**\n\n`true` - user is successfully registered\n\n`false` - username is taken"
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "login",
+							"item": [
+								{
+									"name": "SUCCESS",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('status test', () => {\r",
+													"    pm.response.to.have.status(201)\r",
+													"    pm.response.to.have.status('Created')\r",
+													"})\r",
+													"\r",
+													"const res = pm.response.json()\r",
+													"\r",
+													"pm.test('should have _id', () => {\r",
+													"    pm.expect(res).to.have.property('_id')\r",
+													"    pm.expect(res._id).to.be.a('string')\r",
+													"})\r",
+													"\r",
+													"pm.test('_id should be a string', () => {\r",
+													"    pm.expect(res._id).to.be.a('string')\r",
+													"})\r",
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"sample\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{apiUrl}}/user/login",
+											"host": [
+												"{{apiUrl}}"
+											],
+											"path": [
+												"user",
+												"login"
+											]
+										},
+										"description": "**Response**\n\n`true` - user is successfully registered\n\n`false` - username is taken"
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "curiosity",
+					"item": [
+						{
+							"name": "all",
+							"item": [
+								{
+									"name": "SUCCESS",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/curiosity/all",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"curiosity",
+												"all"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "SUCCESS - list gte 5",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const res = pm.response.json()\r",
+													"\r",
+													"pm.test('should have length', () => {\r",
+													"    pm.expect(res.length).to.be.gte(5)\r",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/curiosity/all",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"curiosity",
+												"all"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status test', () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201])",
+									"    pm.expect(pm.response.status).to.be.oneOf(['OK', 'Created'])",
+									"})"
+								]
+							}
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Add \"api\" in the baseUrl",
+							"const baseUrl = pm.environment.get('baseUrl')",
+							"pm.environment.set('baseUrl', baseUrl.concat('/api'))"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"let baseUrl = pm.environment.get('baseUrl')",
+							"baseUrl = baseUrl.replace('/api', '')",
+							"pm.environment.set('baseUrl', baseUrl)",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "SUCCESS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('status test', () => {\r",
+							"    pm.response.to.have.status(200)\r",
+							"    pm.response.to.have.status('OK')\r",
+							"})\r",
+							"\r",
+							"pm.test('should display html', () => {\r",
+							"    const res = pm.response.text()\r",
+							"    pm.expect(res).to.include('<!DOCTYPE html>')\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let baseUrl = pm.environment.get('baseUrl')\r",
+							"baseUrl = baseUrl.replace('/api', '')\r",
+							"pm.environment.set('baseUrl', baseUrl)"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
