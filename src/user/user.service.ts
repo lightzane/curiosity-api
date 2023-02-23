@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { CuriosityService } from '../curiosity/curiosity.service';
 import { INITIAL_USERS } from '../shared/constants';
 import { LoginDto } from '../shared/dto';
-import { User } from '../shared/models';
+import { Curiosity, User } from '../shared/models';
 import { IDUtil } from '../shared/utils';
 
 @Injectable()
 export class UserService {
   users: User[] = [...INITIAL_USERS];
+
+  constructor(private readonly curiosityService: CuriosityService) {}
 
   /**
    * Verify if the user is registered
@@ -40,5 +43,11 @@ export class UserService {
     this.users.push(newUser);
 
     return true;
+  }
+
+  myFavorites(userId: User['_id']): Curiosity[] {
+    return this.curiosityService.curiosities.filter((curiosity) =>
+      curiosity.favorites.some((fav) => fav._id === userId),
+    );
   }
 }

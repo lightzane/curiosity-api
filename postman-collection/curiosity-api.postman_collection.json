@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7941ea57-6281-4ff9-8dcf-5543f849689c",
+		"_postman_id": "e27ebc31-e3f0-4b7c-b79d-0ac9f4bd558a",
 		"name": "curiosity-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,7 @@
 							"name": "register",
 							"item": [
 								{
-									"name": "SUCCESS",
+									"name": "1 - SUCCESS",
 									"event": [
 										{
 											"listen": "test",
@@ -81,7 +81,7 @@
 							"name": "login",
 							"item": [
 								{
-									"name": "SUCCESS",
+									"name": "2 - SUCCESS",
 									"event": [
 										{
 											"listen": "test",
@@ -101,6 +101,9 @@
 													"\r",
 													"pm.test('_id should be a string', () => {\r",
 													"    pm.expect(res._id).to.be.a('string')\r",
+													"    if (res._id) {\r",
+													"        pm.environment.set('userId', res._id)\r",
+													"    }\r",
 													"})\r",
 													""
 												],
@@ -135,6 +138,113 @@
 									"response": []
 								}
 							]
+						},
+						{
+							"name": ":id/favorites",
+							"item": [
+								{
+									"name": "5 - SUCCESS - empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('status test', () => {\r",
+													"    pm.response.to.have.status(200)\r",
+													"    pm.response.to.have.status('OK')\r",
+													"})\r",
+													"\r",
+													"pm.test('should init with empty array', () => {\r",
+													"    const res = pm.response.json()\r",
+													"    pm.expect(res).to.eql([])\r",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"sample\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{apiUrl}}/user/{{userId}}/favorites",
+											"host": [
+												"{{apiUrl}}"
+											],
+											"path": [
+												"user",
+												"{{userId}}",
+												"favorites"
+											]
+										},
+										"description": "**Response**\n\n`true` - user is successfully registered\n\n`false` - username is taken"
+									},
+									"response": []
+								},
+								{
+									"name": "7 - SUCCESS - NOT empty",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test('status test', () => {\r",
+													"    pm.response.to.have.status(200)\r",
+													"    pm.response.to.have.status('OK')\r",
+													"})\r",
+													"\r",
+													"pm.test('should be greater than 0', () => {\r",
+													"    const res = pm.response.json()\r",
+													"    pm.expect(res.length).to.greaterThan(0)\r",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"sample\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{apiUrl}}/user/{{userId}}/favorites",
+											"host": [
+												"{{apiUrl}}"
+											],
+											"path": [
+												"user",
+												"{{userId}}",
+												"favorites"
+											]
+										},
+										"description": "**Response**\n\n`true` - user is successfully registered\n\n`false` - username is taken"
+									},
+									"response": []
+								}
+							]
 						}
 					]
 				},
@@ -145,14 +255,14 @@
 							"name": "all",
 							"item": [
 								{
-									"name": "SUCCESS",
+									"name": "3 - SUCCESS",
 									"request": {
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/curiosity/all",
+											"raw": "{{apiUrl}}/curiosity/all",
 											"host": [
-												"{{baseUrl}}"
+												"{{apiUrl}}"
 											],
 											"path": [
 												"curiosity",
@@ -163,7 +273,7 @@
 									"response": []
 								},
 								{
-									"name": "SUCCESS - list gte 5",
+									"name": "4 - SUCCESS - list gte 5",
 									"event": [
 										{
 											"listen": "test",
@@ -173,6 +283,11 @@
 													"\r",
 													"pm.test('should have length', () => {\r",
 													"    pm.expect(res.length).to.be.gte(5)\r",
+													"\r",
+													"    if (res.length > 0) {\r",
+													"        const curiosity = res[0]\r",
+													"        pm.environment.set('curiosityId', curiosity._id)\r",
+													"    }\r",
 													"})"
 												],
 												"type": "text/javascript"
@@ -183,13 +298,56 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "{{baseUrl}}/curiosity/all",
+											"raw": "{{apiUrl}}/curiosity/all",
 											"host": [
-												"{{baseUrl}}"
+												"{{apiUrl}}"
 											],
 											"path": [
 												"curiosity",
 												"all"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "favorite",
+							"item": [
+								{
+									"name": "6 - SUCCESS",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"curiosityId\": \"{{curiosityId}}\",\r\n    \"user\": {\r\n        \"_id\": \"{{userId}}\",\r\n        \"username\": \"{{username}}\"\r\n    }\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{apiUrl}}/curiosity/favorite",
+											"host": [
+												"{{apiUrl}}"
+											],
+											"path": [
+												"curiosity",
+												"favorite"
 											]
 										}
 									},
